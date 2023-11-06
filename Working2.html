@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Step Form</title>
+</head>
+<body>
+    <form id="multiStepForm">
+        <!-- Step 1 -->
+        <div class="step" id="step1">
+            <h2>Step 1</h2>
+            <input type="text" id="input1" placeholder="Input 1">
+            <input type="text" id="input2" placeholder="Input 2">
+            <input type="text" id="input3" placeholder="Input 3">
+            <input type="text" id="input4" placeholder="Input 4">
+            <div id="step1Error" style="color: red; display: none;">Please fill in the required space</div>
+            <button type="button" id="nextStep1">Next</button>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="step" id="step2" style="display: none;">
+            <h2>Step 2</h2>
+            <input type="text" id="input5" placeholder="Input 5">
+            <input type="text" id="input6" placeholder="Input 6">
+            <input type="text" id="input7" placeholder="Input 7">
+            <input type="text" id="input8" placeholder="Input 8">
+            <div id="step2Error" style="color: red; display: none;">Please fill in the required space</div>
+            <button type="button" id="prevStep2">Previous</button>
+            <button type="button" id="nextStep2">Next</button>
+        </div>
+
+                 <!-- Step 3 -->
+                 <div class="step" id="step3" style="display: none;">
+                    <h2>Step 3</h2>
+                    <input type="text" id="input9" placeholder="Input 9">
+                    <input type="text" id="input10" placeholder="Input 10">
+                    <input type="text" id="input11" placeholder="Input 11">
+                    <input type="text" id="input12" placeholder="Input 12">
+                    <div id="step3Error" style="color: red; display: none;">Please fill in the required space</div>
+                    <button type="button" id="prevStep3">Previous</button>
+                    <button type="button" id="nextStep3">Next</button>
+                </div>
+
+                 <!-- Step 4 -->
+                 <div class="step" id="step4" style="display: none;">
+                    <h2>Step 4</h2>
+                    <input type="text" id="input13" placeholder="Input 13">
+                    <input type="text" id="input14" placeholder="Input 14">
+                    <input type="text" id="input15" placeholder="Input 15">
+                    <input type="text" id="input16" placeholder="Input 16">
+                    <div id="step4Error" style="color: red; display: none;">Please fill in the required space</div>
+                    <button type="button" id="prevStep4">Previous</button>
+                    <button type="button" id="nextStep4">Next</button>
+                </div>
+
+                 <!-- Step 5 -->
+                 <div class="step" id="step5" style="display: none;">
+                    <h2>Step 5</h2>
+                    <input type="text" id="input17" placeholder="Input 17">
+                    <input type="text" id="input18" placeholder="Input 18">
+                    <input type="text" id="input19" placeholder="Input 19">
+                    <input type="text" id="input20" placeholder="Input 20">
+                    <div id="step5Error" style="color: red; display: none;">Please fill in the required space</div>
+                    <button type="button" id="prevStep5">Previous</button>
+                    <button type="button" id="nextStep5">Next</button>
+                </div>
+
+        <!-- Repeat the above steps for each of the 6 steps -->
+
+        <div class="step" id="step6" style="display: none;">
+            <h2>Step 6</h2>
+            <input type="text" id="input21" placeholder="Input 21">
+            <input type="text" id="input22" placeholder="Input 22">
+            <input type="text" id="input23" placeholder="Input 23">
+            <input type="text" id="input24" placeholder="Input 24">
+            <div id="step6Error" style="color: red; display: none;">Please fill in the required space</div>
+            <button type="button" id="prevStep6">Previous</button>
+            <button type="submit" id="submit">Submit</button>
+        </div>
+    </form>
+
+    <script>
+        const form = document.getElementById("multiStepForm");
+        const steps = document.querySelectorAll(".step");
+        let currentStep = 0;
+        const formData = {};
+
+        function showStep(stepNumber) {
+            steps.forEach((step, index) => {
+                if (index === stepNumber) {
+                    step.style.display = "block";
+                } else {
+                    step.style.display = "none";
+                }
+            });
+        }
+
+        function nextStep() {
+            if (currentStep < steps.length - 1) {
+                if (validateInputs(currentStep)) {
+                    currentStep++;
+                    showStep(currentStep);
+                } else {
+                    return;
+                }
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 0) {
+                currentStep--;
+                showStep(currentStep);
+            }
+        }
+
+        function validateInputs(stepNumber) {
+            const inputs = steps[stepNumber].querySelectorAll("input");
+            let isValid = true;
+
+            inputs.forEach(input => {
+                if (input.value.trim() === "") {
+                    isValid = false;
+                    const errorElement = steps[stepNumber].querySelector(`#step${stepNumber + 1}Error`);
+                    errorElement.style.display = "block";
+                }
+            });
+
+            return isValid;
+        }
+
+        function collectFormData() {
+            const inputs = steps[currentStep].querySelectorAll("input");
+            inputs.forEach((input, index) => {
+                formData[`input${index + 1}`] = input.value;
+            });
+        }
+
+        function submitForm() {
+            if (currentStep === steps.length - 1) {
+                if (validateInputs(currentStep)) {
+                    collectFormData();
+                    // Now, you can send formData to your Telegram bot
+                    sendFormDataToTelegramBot(formData);
+                }
+            } else {
+                nextStep();
+            }
+        }
+
+        function sendFormDataToTelegramBot(FormData) {
+            // Replace with your code to send data to a Telegram bot
+            // Example: You can use fetch or any method you prefer
+
+            const botToken = "6849987947:AAHtl2HC5003nzuRmhpFYioY7NQtF6R1VO4" ;
+            const chatId = "5007308381" ;
+
+           const messageText = "Form Data : \n" ;
+           for (const key in data) {
+            messageText += "${key}: ${FormData[key]}\n" ;
+           }
+
+            const apiUrl ="https://api.telegram.org/bot${botToken}/sendMessage" ;
+
+            fetch(apiUrl, {
+                method : "POST",
+                headers : {"content-type": "application/json" ,
+            },
+            body : JSON.stringify({
+                chat_id : chatId,
+                text: messageText,
+            }),
+        })
+        .then(response => response => response.json())
+        .then(formData => {
+            console.log("Form data collected and sent to Telegram:", formdata);
+        })
+        .catch(error => {
+            console.error("error sending form data:", formData);
+        });
+          
+        }
+
+        document.getElementById("nextStep1").addEventListener("click", nextStep);
+        document.getElementById("prevStep2").addEventListener("click", prevStep);
+        document.getElementById("nextStep2").addEventListener("click", nextStep);
+        document.getElementById("prevStep3").addEventListener("click", prevStep);
+        document.getElementById("nextStep3").addEventListener("click", nextStep);
+        document.getElementById("prevStep4").addEventListener("click", prevStep);
+        document.getElementById("nextStep4").addEventListener("click", nextStep);
+        document.getElementById("prevStep5").addEventListener("click", prevStep);
+        document.getElementById("nextStep5").addEventListener("click", nextStep);
+        // Repeat the above for all the steps
+    </script>
+</body>
+</html>
